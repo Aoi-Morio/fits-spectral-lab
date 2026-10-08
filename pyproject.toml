@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fits-spectral-lab"
+version = "0.1.0"
+description = "Local FITS and CSV spectroscopy workbench"
+requires-python = ">=3.11"
+dependencies = [
+  "astropy>=6,<9", "numpy>=1.26,<3", "scipy>=1.12,<2",
+  "streamlit>=1.40,<2", "plotly>=5.24,<7"
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<10"]
+
+[tool.setuptools.packages.find]
+include = ["spectral_lab*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
