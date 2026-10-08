@@ -133,6 +133,20 @@ def test_duplicate_axis_and_cube_fail_explicitly():
         read_fits(image_bytes(np.ones((4, 4, 20))))
 
 
+@pytest.mark.parametrize("with_error", [True, False])
+def test_processed_csv_can_be_reopened_without_using_continuum_as_error(with_error):
+    original = demo_spectrum()
+    if not with_error:
+        original.error = None
+    continuum, _ = continuum_fit(original, excluded=[(6555, 6571)])
+    reopened = read_csv(export_csv(original, continuum).encode())
+    np.testing.assert_allclose(reopened.flux, original.flux)
+    if with_error:
+        np.testing.assert_allclose(reopened.error, original.error)
+    else:
+        assert reopened.error is None
+
+
 def test_nonpositive_continuum_has_no_equivalent_width():
     x = np.linspace(0, 20, 201)
     continuum = np.zeros(201)

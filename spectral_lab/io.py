@@ -189,11 +189,16 @@ def read_csv(raw: bytes, wavelength_unit="Angstrom") -> Spectrum:
         lines = [line for line in text.splitlines() if line.strip() and not line.lstrip().startswith("#")]
         dialect = csv.Sniffer().sniff("\n".join(lines[:10]), delimiters=",;\t ")
         rows = list(csv.reader(lines, dialect))
+        selected_columns = None
         try:
             float(rows[0][0])
         except ValueError:
+            header = [name.strip().lower() for name in rows[0]]
+            if len(header) >= 2 and header[0].startswith("wavelength_") and header[1] == "flux":
+                selected_columns = [0, 1] + ([header.index("error")] if "error" in header else [])
             rows = rows[1:]
-        data = np.asarray([[float(v) for v in row if v.strip()] for row in rows], dtype=float)
+        data = np.asarray([[float(row[i]) for i in selected_columns] if selected_columns is not None
+                           else [float(v) for v in row if v.strip()] for row in rows], dtype=float)
         if data.ndim != 2 or data.shape[1] not in (2, 3):
             raise ValueError("列数")
     except (ValueError, IndexError, csv.Error, UnicodeError) as exc:
