@@ -9,7 +9,7 @@ description = "Local FITS and CSV spectroscopy workbench"
 requires-python = ">=3.11"
 dependencies = [
   "astropy>=6,<9", "numpy>=1.26,<3", "scipy>=1.12,<2",
-  "streamlit>=1.40,<2", "plotly>=5.24,<7"
+  "streamlit>=1.50,<2", "plotly>=5.24,<7"
 ]
 
 [project.optional-dependencies]
@@ -18,6 +18,8 @@ dev = ["pytest>=8,<10"]
 [tool.setuptools.packages.find]
 include = ["spectral_lab*"]
 
+[tool.setuptools.package-data]
+spectral_lab = ["*.css"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-
